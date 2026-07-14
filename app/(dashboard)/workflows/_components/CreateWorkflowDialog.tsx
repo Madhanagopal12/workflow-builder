@@ -34,9 +34,13 @@ import { CreateWorkFlow } from "@/actions/workflows/createWorkFlow";
 import { toast } from "sonner";
 import { error } from "console";
 import { formatWeekNumber } from "react-day-picker";
+import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context";
+import { useRouter } from "next/navigation";
 
 function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
   const [open, setOpen] = useState(false);
+
+  const router = useRouter();
 
   const form = useForm<createWorkFlowSchemaType>({
     resolver: zodResolver(createWorkFlowSchema),
@@ -49,8 +53,9 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
   const { mutate, isPending } = useMutation({
     mutationFn: CreateWorkFlow,
 
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Created workflow", { id: "create-workflow" });
+      router.push(`/workflow/editor/${data.workflowId}`);
     },
     onError: (error) => {
       toast.error("Failed to created workflow", { id: "create-workflow" });
