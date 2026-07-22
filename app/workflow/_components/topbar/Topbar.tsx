@@ -18,7 +18,7 @@ function Topbar({ title, subtitle, workflowId }: Props) {
 
   return (
     <header
-      className="flex justify-between p-2 border-p-2 border-separate
+      className="flex justify-between p-2 border-b-2 border-separate
     w-full h-[60px] sticky top-0 bg-background z-10"
     >
       <div className="flex gap-1 flex-1">
