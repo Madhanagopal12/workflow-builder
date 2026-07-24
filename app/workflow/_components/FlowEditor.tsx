@@ -4,9 +4,12 @@ import { workflow } from "@/lib/generated/prisma/client";
 import { CreateFlowNode } from "@/lib/workflow/CreateFlowNode";
 import { TaskType } from "@/types/task";
 import {
+  addEdge,
   Background,
   BackgroundVariant,
+  Connection,
   Controls,
+  Edge,
   ReactFlow,
   useEdgesState,
   useNodesState,
@@ -16,6 +19,7 @@ import "@xyflow/react/dist/style.css";
 import NodeComponent from "./nodes/NodeComponent";
 import { useCallback, useEffect } from "react";
 import { AppNode } from "@/types/appNode";
+import { connect } from "node:http2";
 
 const nodeTypes = {
   FlowScrapperNode: NodeComponent,
@@ -26,7 +30,7 @@ const fitViewOptions = { padding: 1 };
 
 function FlowEditor({ workflow }: { workflow: workflow }) {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const { setViewport, screenToFlowPosition } = useReactFlow();
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -51,6 +55,11 @@ function FlowEditor({ workflow }: { workflow: workflow }) {
     [screenToFlowPosition, setNodes],
   );
 
+  const onConnect = useCallback((connection: Connection) => {
+    console.log("@ ON CONNECT", connection);
+    setEdges((nds) => addEdge({ ...connection, animated: true }, nds));
+  }, []);
+
   useEffect(() => {
     try {
       const flow = JSON.parse(workflow.definition);
@@ -73,12 +82,13 @@ function FlowEditor({ workflow }: { workflow: workflow }) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
-        snapToGrid
+        // snapToGrid
         snapGrid={snapGrid}
         fitView
         fitViewOptions={fitViewOptions}
         onDragOver={onDragOver}
         onDrop={onDrop}
+        onConnect={onConnect}
       >
         <Controls position="top-left" fitViewOptions={fitViewOptions} />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />

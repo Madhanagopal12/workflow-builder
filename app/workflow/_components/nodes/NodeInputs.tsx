@@ -4,6 +4,7 @@ import { Handle, Position } from "@xyflow/react";
 import { PowerSquare } from "lucide-react";
 import { ReactNode } from "react";
 import NodeParamField from "./NodeParamField";
+import { ColorHandle } from "./Common";
 
 export function NodeInputs({ children }: { children: ReactNode }) {
   return <div className="flex flex-col divide-y gap-2">{children}</div>;
@@ -27,6 +28,7 @@ export function NodeInput({
           position={Position.Left}
           className={cn(
             "bg-muted-foreground! border-2! border-background! -left-2! w-4! h-4!",
+            ColorHandle[input.type],
           )}
         />
       )}

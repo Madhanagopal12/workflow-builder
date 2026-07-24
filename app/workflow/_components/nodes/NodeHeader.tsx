@@ -18,6 +18,7 @@ function NodeHeader({ taskType }: { taskType: TaskType }) {
           {task.isEntryPoint && <Badge>Entry point</Badge>}
           <Badge className="flex items-center gap-2 text-xs">
             <CoinsIcon size={16} />
+            TODOS
           </Badge>
           <Button
             variant={"ghost"}
