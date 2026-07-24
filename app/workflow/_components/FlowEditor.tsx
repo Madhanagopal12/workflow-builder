@@ -20,9 +20,14 @@ import NodeComponent from "./nodes/NodeComponent";
 import { useCallback, useEffect } from "react";
 import { AppNode } from "@/types/appNode";
 import { connect } from "node:http2";
+import DeletableEdge from "./edges/DeletableEdge";
 
 const nodeTypes = {
   FlowScrapperNode: NodeComponent,
+};
+
+const edgeTypes = {
+  default: DeletableEdge,
 };
 
 const snapGrid: [number, number] = [50, 50];
@@ -55,10 +60,13 @@ function FlowEditor({ workflow }: { workflow: workflow }) {
     [screenToFlowPosition, setNodes],
   );
 
-  const onConnect = useCallback((connection: Connection) => {
-    console.log("@ ON CONNECT", connection);
-    setEdges((nds) => addEdge({ ...connection, animated: true }, nds));
-  }, []);
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      console.log("@ ON CONNECT", connection);
+      setEdges((nds) => addEdge({ ...connection, animated: true }, nds));
+    },
+    [setEdges],
+  );
 
   useEffect(() => {
     try {
@@ -82,6 +90,7 @@ function FlowEditor({ workflow }: { workflow: workflow }) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         // snapToGrid
         snapGrid={snapGrid}
         fitView
