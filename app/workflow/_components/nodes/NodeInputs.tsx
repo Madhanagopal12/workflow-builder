@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { TaskParam } from "@/types/task";
-import { Handle, Position } from "@xyflow/react";
-import { PowerSquare } from "lucide-react";
+import { Handle, Position, useEdges } from "@xyflow/react";
+import { Egg, PowerSquare } from "lucide-react";
 import { ReactNode } from "react";
 import NodeParamField from "./NodeParamField";
 import { ColorHandle } from "./Common";
@@ -10,7 +10,6 @@ export function NodeInputs({ children }: { children: ReactNode }) {
   return <div className="flex flex-col divide-y gap-2">{children}</div>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function NodeInput({
   input,
   nodeId,
@@ -18,12 +17,19 @@ export function NodeInput({
   input: TaskParam;
   nodeId: string;
 }) {
+  const edges = useEdges();
+
+  const isConnected = edges.some(
+    (edge) => edge.target === nodeId && edge.targetHandle === input.name,
+  );
+
   return (
     <div className="flex justify-start relative p-3 bg-secondary w-full">
-      <NodeParamField param={input} nodeId={nodeId} />
+      <NodeParamField param={input} nodeId={nodeId} disabled={isConnected} />
       {!input.hideHandle && (
         <Handle
           id={input.name}
+          isConnectable={!isConnected}
           type="target"
           position={Position.Left}
           className={cn(
