@@ -1,4 +1,5 @@
 import { TaskParamType, TaskType } from "@/types/task";
+import { WorkflowTask } from "@/types/workFlow";
 import {
   CodeIcon,
   Globe2Icon,
@@ -15,6 +16,7 @@ export const ExtractTextFromElementTask = {
     <TextIcon className="stroke-pink-400" {...props} />
   ),
   isEntryPoint: false,
+  credits: 2,
   inputs: [
     {
       name: "Html",
@@ -29,4 +31,4 @@ export const ExtractTextFromElementTask = {
     },
   ],
   outputs: [{ name: "Extracted Text", type: TaskParamType.STRING }],
-};
+} satisfies WorkflowTask;

@@ -1,4 +1,5 @@
 import { TaskParamType, TaskType } from "@/types/task";
+import { WorkflowTask } from "@/types/workFlow";
 import {
   CodeIcon,
   Globe2Icon,
@@ -14,6 +15,7 @@ export const PageToHtmlTask = {
     <CodeIcon className="stroke-pink-400" {...props} />
   ),
   isEntryPoint: false,
+  credits: 2,
   inputs: [
     {
       name: "Web Page",
@@ -25,4 +27,4 @@ export const PageToHtmlTask = {
     { name: "HTML", type: TaskParamType.STRING },
     { name: "Web Page", type: TaskParamType.BROWSER_INSTANCE },
   ],
-};
+} satisfies WorkflowTask;
