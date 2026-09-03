@@ -2,7 +2,7 @@
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { workflow } from "@/lib/generated/prisma/client";
+import { Workflow } from "@/lib/generated/prisma/client";
 import { cn } from "@/lib/utils";
 import { WorkFlowStatus } from "@/types/workFlow";
 import {
@@ -32,7 +32,7 @@ const statusColors = {
   [WorkFlowStatus.PUBLISHED]: "bg-primary",
 };
 
-function WorkflowCard({ workflow }: { workflow: workflow }) {
+function WorkflowCard({ workflow }: { workflow: Workflow }) {
   const isDraft = workflow.status === WorkFlowStatus.DRAFT;
 
   return (

@@ -43,6 +43,7 @@ async function UserWorkflows() {
   try {
     workflows = await GetWorkflowsForUser();
   } catch (error) {
+    console.log("ERROR FRM WRKFLO: ", error);
     return (
       <Alert variant="destructive">
         <AlertCircle className="w-4 h-4" />

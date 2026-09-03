@@ -13,7 +13,7 @@ datasource db {
 }
 
 
-model workflow {
+model Workflow {
   id String @id @default(cuid())
   userId String
   name String
@@ -25,6 +25,43 @@ model workflow {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  executions WorkflowExecution[]
+
   // User can't have two workflows with same name
   @@unique([name, userId])
+}
+
+
+model WorkflowExecution {
+  id String @id @default(uuid())
+  workflowId String
+  userId String
+  trigger String
+  status String
+  createdAt DateTime @default(now())
+  startedAt DateTime?
+  completedAt DateTime?
+
+  phases ExecutionPhase[]
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+}
+
+
+model ExecutionPhase {
+  id String @id @default(uuid())
+  userId String
+  status String
+  number Int
+  node String
+  name String
+  startedAt DateTime?
+  completedAt DateTime?
+  inputs String?
+  outputs String?
+
+  creditsConsumed Int?
+
+  workflowExecutionId String
+  execution WorkflowExecution @relation(fields: [workflowExecutionId], references: [id], onDelete: Cascade)
 }

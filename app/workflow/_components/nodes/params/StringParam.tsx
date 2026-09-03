@@ -26,9 +26,9 @@ function StringParam({
     Component = Textarea;
   }
   return (
-    <div className="space-y p-1 w-full">
+    <div className="space-y p-2 w-full">
       <Label htmlFor={id} className="text-xs flex">
-        {param.name}
+        <p className="p-2"> {param.name} </p>
         {param.required && <p className="text-red-400 px-2">*</p>}
       </Label>
       <Component
