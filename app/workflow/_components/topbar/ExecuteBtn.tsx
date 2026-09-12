@@ -12,6 +12,7 @@ import { toast } from "sonner";
 function ExecuteBtn({ workflowId }: { workflowId: string }) {
   const generate = useExecutionPlan();
   const { toObject } = useReactFlow();
+  console.log("toObject: ", JSON.stringify(toObject()));
   const router = useRouter();
 
   const mutation = useMutation({

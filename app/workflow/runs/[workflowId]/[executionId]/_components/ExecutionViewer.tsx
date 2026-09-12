@@ -47,8 +47,8 @@ export default function ExecutionViewer({
   const isRunning = query.data?.status === WorkflowExecutionStatus.RUNNING;
 
   const duration = DatesToDurationString(
-    query.data?.completedAt,
     query.data?.startedAt,
+    query.data?.completedAt,
   );
 
   const creditsConsumed = GetPhasesTotalCost(query.data?.phases || []);

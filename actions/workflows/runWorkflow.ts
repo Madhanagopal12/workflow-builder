@@ -9,6 +9,7 @@ import {
   WorkflowExecutionPlan,
   WorkflowExecutionStatus,
   WorkflowExecutionTrigger,
+  WorkFlowStatus,
 } from "@/types/workFlow";
 import { auth } from "@clerk/nextjs/server";
 import { tr } from "date-fns/locale";
@@ -53,6 +54,7 @@ export async function RunWorkflow(form: {
       trigger: WorkflowExecutionTrigger.MANUAL,
       startedAt: new Date(),
       status: WorkflowExecutionStatus.PENDING,
+      definition: flowDefinition,
       phases: {
         create: executionPlan.flatMap((phase) => {
           return phase.nodes.flatMap((node) => {
