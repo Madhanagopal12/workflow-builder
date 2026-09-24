@@ -8,13 +8,13 @@ export async function ExtractTextFromElementExecutor(
   try {
     const selector = environment.getInput("Selector");
     if (!selector) {
-      console.error("Selector not defined");
+      environment.log.error("Selector is not defined");
       return false;
     }
 
     const html = environment.getInput("Html");
     if (!html) {
-      console.error("Html not defined");
+      environment.log.error("Html not defined");
       return false;
     }
 
@@ -23,22 +23,23 @@ export async function ExtractTextFromElementExecutor(
     console.log("@@@ELEMENT: ", element);
 
     if (!element) {
-      console.error("Element not found");
+      environment.log.error("Element not found");
       return false;
     }
 
     const extractedText = $.text(element);
     console.log("@@@EXTRACTED TEXT: ", extractedText);
     if (!extractedText) {
-      console.error("Element has no text");
+      environment.log.error("Element has no text");
       return false;
     }
 
     environment.setOutput("Extracted Text", extractedText);
 
     return true;
-  } catch (error) {
-    console.error(error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    environment.log.error(error.message);
     return false;
   }
 }

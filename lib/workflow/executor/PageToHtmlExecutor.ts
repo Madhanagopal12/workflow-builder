@@ -9,8 +9,9 @@ export async function PageToHtmlExecutor(
   console.log("HTML: ", html);
   try {
     return true;
-  } catch (error) {
-    console.error(error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    environment.log.error(error.message);
     return false;
   }
 }
