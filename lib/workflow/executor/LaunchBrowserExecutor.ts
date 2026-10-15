@@ -8,15 +8,16 @@ export async function LanuchBrowserExecutor(
   environment: ExecutionEnvironment<typeof LaunchBrowserTask>,
 ): Promise<boolean> {
   const websiteUrl = environment.getInput("Website Url");
-  console.log("@@@ WEBSITE Url: ", websiteUrl);
   try {
     const browser = await puppeteer.launch({
-      headless: false, // for testing
+      headless: true, // for testing
     });
+    environment.log.info("Browser started successfully");
     environment.setBrowser(browser);
     const page = await browser.newPage();
     await page.goto(websiteUrl);
     environment.setPage(page);
+    environment.log.info(`Opened page at: ${websiteUrl}`);
     return true;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

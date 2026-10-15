@@ -4,10 +4,9 @@ import { PageToHtmlTask } from "../task/PageToHtml";
 export async function PageToHtmlExecutor(
   environment: ExecutionEnvironment<typeof PageToHtmlTask>,
 ): Promise<boolean> {
-  const html = await environment.getPage()!.content();
-  environment.setOutput("HTML", html);
-  console.log("HTML: ", html);
   try {
+    const html = await environment.getPage()!.content();
+    environment.setOutput("HTML", html);
     return true;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

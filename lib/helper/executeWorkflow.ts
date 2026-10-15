@@ -235,7 +235,7 @@ async function executePhase(
     return false;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  s; // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const executionEnvironment: ExecutionEnvironment<any> =
     createExecutionEnvironment(node, environment, logCollector);
 
