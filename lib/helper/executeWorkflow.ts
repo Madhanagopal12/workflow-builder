@@ -54,7 +54,11 @@ export async function ExecuteWorkflow(executionId: string) {
       phase,
       environment,
       edges,
+      execution.userId,
     );
+
+    creditsConsumed = phaseExecution.creditsConsumed;
+
     if (!phaseExecution.success) {
       executionFalied = true;
       break;
@@ -158,6 +162,7 @@ async function executeWorkflowPhase(
   phase: ExecutionPhase,
   environment: Environment,
   edges: Edge[],
+  userId: string,
 ) {
   const logCollector = createLogCollector();
   const startedAt = new Date();
@@ -178,17 +183,25 @@ async function executeWorkflowPhase(
   });
 
   const creditsRequired = TaskRegistry[node.data.type].credits;
-  console.log(
-    `Executing phase ${phase.name} with ${creditsRequired} credits Required`,
 
-    // TODO: decrement the user balance (with required credits)
-  );
+  // TODO: decrement the user balance (with required credits)
 
-  const success = await executePhase(phase, node, environment, logCollector);
+  let success = await decrementCredits(userId, creditsRequired, logCollector);
+  const creditsConsumed = success ? creditsRequired : 0;
+
+  if (success) {
+    success = await executePhase(phase, node, environment, logCollector);
+  }
 
   const outputs = environment.phases[node.id].outputs;
-  await finalizePhase(phase.id, success, outputs, logCollector);
-  return { success };
+  await finalizePhase(
+    phase.id,
+    success,
+    outputs,
+    logCollector,
+    creditsConsumed,
+  );
+  return { success, creditsConsumed };
 }
 
 async function finalizePhase(
@@ -197,6 +210,7 @@ async function finalizePhase(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   outputs: any,
   logCollector: LogCollector,
+  creditsConsumed: number,
 ) {
   const finalStatus = success
     ? ExecutionPhaseStatus.COMPLETED
@@ -209,6 +223,7 @@ async function finalizePhase(
     data: {
       status: finalStatus,
       completedAt: new Date(),
+      creditsConsumed,
       outputs: JSON.stringify(outputs),
       logs: {
         createMany: {
@@ -235,7 +250,7 @@ async function executePhase(
     return false;
   }
 
-  s; // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const executionEnvironment: ExecutionEnvironment<any> =
     createExecutionEnvironment(node, environment, logCollector);
 
@@ -312,4 +327,23 @@ async function cleanupEnvironment(environment: Environment) {
     await environment.browser.close().catch((error) => {
       console.log("Cannot able to close the browser, reason: ", error);
     });
+}
+
+async function decrementCredits(
+  userId: string,
+  amount: number,
+  logCollector: LogCollector,
+) {
+  try {
+    await prisma.userBalance.update({
+      where: { userId, credits: { gte: amount } },
+      data: {
+        credits: { decrement: amount },
+      },
+    });
+    return true;
+  } catch (error) {
+    logCollector.error("Insufficient credits");
+    return false;
+  }
 }

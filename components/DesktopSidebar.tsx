@@ -19,10 +19,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import UserAvailableCreditsBadge from "./UserAvailableCreditsBadge";
 
 const routes = [
   {
-    href: "",
+    href: "/",
     label: "Home",
     icon: HomeIcon,
   },
@@ -59,7 +60,7 @@ function DesktopSidebar() {
       <div className="flex items-center justify-center gap-2 border-b border-separate p-4">
         <Logo />
       </div>
-      <div className="p-2">TODO CREDITS</div>
+      <UserAvailableCreditsBadge />
       <div className="flex flex-col gap-2">
         {routes.map((route) => (
           <Link
