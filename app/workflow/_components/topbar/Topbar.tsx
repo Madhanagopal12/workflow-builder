@@ -2,11 +2,11 @@
 
 import TooltipWrapper from "@/components/TooltipWrapper";
 import { Button } from "@/components/ui/button";
-import { sub } from "date-fns";
 import { ChevronLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import SaveBtn from "./SaveBtn";
 import ExecuteBtn from "./ExecuteBtn";
+import NavigationTabs from "./NavigationTabs";
+import SaveBtn from "./SaveBtn";
 
 interface Props {
   title: string;
@@ -38,6 +38,7 @@ function Topbar({ title, subtitle, workflowId, hideButtons = false }: Props) {
           )}
         </div>
       </div>
+      <NavigationTabs workflowId={workflowId} />
       <div className="flex flex-1 gap-1 justify-end">
         {!hideButtons && (
           <>

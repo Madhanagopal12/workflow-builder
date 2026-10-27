@@ -1,5 +1,6 @@
 import { AppNode } from "@/types/appNode";
 import { Environment, ExecutionEnvironment } from "@/types/executor";
+import { LogCollector } from "@/types/log";
 import { TaskParamType } from "@/types/task";
 import {
   ExecutionPhaseStatus,
@@ -10,13 +11,11 @@ import { revalidatePath } from "next/cache";
 import { Browser, Page } from "puppeteer";
 import "server-only";
 import { ExecutionPhase } from "../generated/prisma/client";
+import { createLogCollector } from "../log";
 import { prisma } from "../prisma";
 import { ExecutorRegistry } from "../workflow/executor/registry";
 import { TaskRegistry } from "../workflow/task/taskRegistry";
 import { waitFor } from "./waitFor";
-import { LogCollector } from "@/types/log";
-import { createLogCollector } from "../log";
-import { timeStamp } from "console";
 
 export async function ExecuteWorkflow(executionId: string) {
   const execution = await prisma.workflowExecution.findUnique({
@@ -32,24 +31,22 @@ export async function ExecuteWorkflow(executionId: string) {
 
   const edges = JSON.parse(execution.definition).edges as Edge[];
 
-  // TODO: setup execution environment
+  //  setup execution environment
   const environment: Environment = { phases: {} };
 
-  // TODO: initialize workflow execution
+  //  initialize workflow execution
   await initializeWorkflowExecution(executionId, execution.workflowId);
 
-  // TODO: innitialize phases status
+  //  innitialize phases status
   await initializePhaseStatues(execution);
 
-  // eslint-disable-next-line prefer-const
   let creditsConsumed = 0;
 
   let executionFalied = false;
 
   for (const phase of execution.phases) {
     await waitFor(3000);
-    // TODO: consume credits
-    // TODO: execute phase
+    //  execute phase
     const phaseExecution = await executeWorkflowPhase(
       phase,
       environment,
@@ -57,6 +54,7 @@ export async function ExecuteWorkflow(executionId: string) {
       execution.userId,
     );
 
+    //  consume credits
     creditsConsumed = phaseExecution.creditsConsumed;
 
     if (!phaseExecution.success) {
@@ -65,7 +63,7 @@ export async function ExecuteWorkflow(executionId: string) {
     }
   }
 
-  // TODO: finalize execution
+  //  finalize execution
   await finalizeWorkflowExecution(
     executionId,
     execution.workflowId,
@@ -73,7 +71,7 @@ export async function ExecuteWorkflow(executionId: string) {
     executionFalied,
   );
 
-  // TODO: clean up the environment
+  //  clean up the environment
   await cleanupEnvironment(environment);
 
   revalidatePath("/workflows/runs");
@@ -184,7 +182,7 @@ async function executeWorkflowPhase(
 
   const creditsRequired = TaskRegistry[node.data.type].credits;
 
-  // TODO: decrement the user balance (with required credits)
+  //  decrement the user balance (with required credits)
 
   let success = await decrementCredits(userId, creditsRequired, logCollector);
   const creditsConsumed = success ? creditsRequired : 0;
